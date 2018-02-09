@@ -1,0 +1,5 @@
+#!/bin/bash
+
+cd rust_functions
+cargo build --release
+cd ..

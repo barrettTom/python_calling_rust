@@ -1,0 +1,39 @@
+#!/usr/bin/python3
+
+from time import time
+from ctypes import CDLL, POINTER, Structure, c_char_p, c_float, c_int
+
+rust_functions = CDLL("rust_functions/target/release/librust_functions.so")
+
+counted = rust_functions.count(b"banana", b"na")
+assert counted == 2
+
+rust_functions.append.restype = c_char_p
+appended = rust_functions.append(b"bana", b"na")
+assert appended == b"banana"
+
+cubed = rust_functions.cube(3)
+assert cubed == 27
+
+rust_functions.float_multiply.argtypes = [c_float, c_float]
+rust_functions.float_multiply.restype = c_float
+multiplied = rust_functions.float_multiply(1.5, 4.5)
+assert multiplied == 6.75
+
+l = [1, 2, 3]
+buff_type = len(l) * c_int
+buff = buff_type(*l)
+
+class Tuple(Structure):
+    _fields_ = [("l", POINTER(c_int)),
+                ("size", c_int)]
+
+    def get_list(self):
+        l = []
+        for i in range(self.size):
+            l.append(self.l[i])
+        return l
+
+rust_functions.increment_list.restype = Tuple
+incremented = rust_functions.increment_list(buff, len(l))
+assert incremented.get_list() == [2, 3, 4]

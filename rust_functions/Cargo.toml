@@ -1,0 +1,11 @@
+[package]
+name = "rust_functions"
+version = "0.1.0"
+authors = ["tom barrett <spalf0@gmail.com>"]
+
+[lib]
+name = "rust_functions"
+crate-type = ["dylib"]
+
+[dependencies]
+libc = "0.2"
